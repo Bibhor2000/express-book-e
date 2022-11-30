@@ -33,5 +33,52 @@ router.post('/', async (req, res, next) => {
 	}
 });
 
+//Create a Put Bookmark
+router.put('/:id', async (req, res, next) => {
+	try {
+		// 1. Find the Bookmark by its id, passing in two additional arguments:
+		// the request body holds the updated information
+		// { new: true } returns the updated document instead of the old one
+		const bookmarkToUpdate = await Bookmark.findByIdAndUpdate(
+			req.params.id,
+			req.body,
+			{
+				new: true,
+			}
+		);
+		// If a bookmark was found and operation successful
+		if (bookmarkToUpdate) {
+			// send back updated bookmark
+			res.json(bookmarkToUpdate);
+		} else {
+			// else send back 404 Not Found
+			res.sendStatus(404);
+		}
+	} catch (error) {
+		next(err);
+	}
+});
+
+// Delete: DELETE a Bookmark
+router.delete('/:id', async (req, res, next) => {
+	try {
+		// 1. Find the Bookmark by its id, passing in two additional arguments:
+		// the request body holds the updated information
+		// { new: true } returns the updated document instead of the old one
+		const bookmarkToDelete = await Bookmark.findByIdAndDelete(req.params.id);
+		console.log(bookmarkToDelete);
+		// If a bookmark was found and operation successful
+		if (bookmarkToDelete) {
+			// send back 204 No Content
+			res.sendStatus(204);
+		} else {
+			// else send back 404 Not Found
+			res.sendStatus(404);
+		}
+	} catch (error) {
+		next(err);
+	}
+});
+
 // Export this router object so that it is accessible when we require the file elsewhere
 module.exports = router;
