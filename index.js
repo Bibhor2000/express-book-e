@@ -4,6 +4,7 @@
 const express = require('express');
 // instantiate express
 const app = express();
+const cors = require('cors');
 app.set('port', process.env.PORT || 8000);
 
 //=============================================================================
@@ -15,6 +16,7 @@ app.use(express.json());
 // `express.urlencoded` parses x-ww-form-urlencoded request data and
 //  adds it to the request object as request.body
 app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 
 //=============================================================================
 // ROUTES
@@ -27,6 +29,12 @@ app.get('/', (req, res) => {
 const bookmarksController = require('./controllers/bookmarksController');
 app.use('/api/bookmarks/', bookmarksController);
 /* END CONTROLLERS HERE */
+
+app.use((err, req, res, next) => {
+	const statusCode = res.statusCode || 500;
+	const message = err.message || 'Internal Server Error';
+	res.status(statusCode).send(message);
+  });
 
 //=============================================================================
 // START SERVER

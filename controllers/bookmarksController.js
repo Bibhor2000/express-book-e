@@ -11,7 +11,7 @@ const Bookmark = require('../models/Bookmark');
 router.get('/', async (req, res, next) => {
 	try {
 		// 1. Get all of the bookmarks from the DB
-		const bookmarks = await Bookmark.find({});
+		const bookmarks = await Bookmark.find({}).populate('owner')
 		// 2. Send them back to the client as JSON
 		res.json(bookmarks);
 	} catch (err) {
@@ -19,6 +19,15 @@ router.get('/', async (req, res, next) => {
 		next(err);
 	}
 });
+
+router.get('/:id', async (req, res, next) => {
+    try {
+        const bookmark = await Bookmark.findById(req.params.id).populate('owner')
+        res.json(bookmark);
+    } catch (err) {
+        next(err)
+    }
+})
 
 // Create: POST a Bookmark
 router.post('/', async (req, res, next) => {
